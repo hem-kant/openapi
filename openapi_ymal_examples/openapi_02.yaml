@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info: 
+  title: Shop Online APIs Definition
+  description: |
+   Using this Openapi specification, any consumer can understand the API that are exposed by the Shop-Online team.
+  termsOfService: http://hem-kant.blogspot.com/
+  contact: 
+    name: API Support
+    url: http://hem-kant.blogspot.com/
+    email: hemkant.india@gmail.com
+  license: 
+    name: OnlineShop License
+    url: http://hem-kant.blogspot.com/
+  version: 0.0.1
+servers: 
+  - url: https://dev.api.com/v1/
+    description: Devlopment API
+  - url: https://qa.api.com/v1/
+    description: QA API
+  - url: https://api.com/v1/
+    description: PROD API
+  - url: https://{username}.api.com:{port}/{version}
+    variables:
+      username:
+        default: demo
+        description: this value is a default.
+      port:
+        enum:
+          - "8080"
+          - "443"
+        default: "8080"
+      version: 
+        default: v1
+paths: {}
