@@ -1,0 +1,229 @@
+openapi: 3.0.3
+info: 
+  title: Shop Online APIs Definition
+  description: |
+   Using this Openapi specification, any consumer can understand the API that are exposed by the Shop-Online team.
+  termsOfService: http://hem-kant.blogspot.com/
+  contact: 
+    name: API Support
+    url: http://hem-kant.blogspot.com/
+    email: hemkant.india@gmail.com
+  license: 
+    name: OnlineShop License
+    url: http://hem-kant.blogspot.com/
+  version: 0.0.1
+servers: 
+  - url: https://dev.api.com/v1/
+    description: Devlopment API
+  - url: https://qa.api.com/v1/
+    description: QA API
+  - url: https://api.com/v1/
+    description: PROD API
+  - url: https://{username}.api.com:{port}/{version}
+    variables:
+      username:
+        default: demo
+        description: this value is a default.
+      port:
+        enum:
+          - "8080"
+          - "443"
+        default: "8080"
+      version: 
+        default: v1
+paths: 
+  /categories:
+    get:
+      summary: Returns the list of all products categories
+      description: Returns the list of all products and categories which is available on shopOnline portal
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            maximum: 1000
+          example: 100
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    categoryId:
+                      type: integer
+                    name:
+                      type: string
+  /categories/{categoryId}:
+    get:
+      summary: Returns the list of all products categories
+      description: Returns the list of all products and categories which is available on shopOnline portal
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            maximum: 1000
+          example: 100
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categoryId:
+                    type: integer
+                  name:
+                    type: string 
+  /products:
+    get:
+      summary: Returns the list of all products
+      description: Returns the list of all products which is available on shopOnline portal
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            maximum: 1000
+          example: 100
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    productId:
+                      type: integer
+                    name:
+                      type: string
+                    price:
+                      type: number
+                    categoryName:
+                      type: string
+                    quantity:
+                      type: integer
+  /products/{productsId}:
+    get:
+      summary: Returns the products details
+      description: Returns the products details based on ID which is available on shopOnline portal
+      parameters:
+        - name: productsId
+          in: path
+          required: true
+          schema:
+            type: integer
+            maximum: 1000
+          example: 100
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    productId:
+                      type: integer
+                    name:
+                      type: string
+                    price:
+                      type: number
+                    categoryName:
+                      type: string
+                    quantity:
+                      type: integer
+  /orders:
+    post:
+      summary: order api
+      description: |
+        Post order details for processing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products: 
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      name:
+                        type: string
+                      price:
+                        type: number
+                      categoryName:
+                        type: string
+                      quantity:
+                        type: integer
+                address:
+                  type: object
+                  properties:
+                    addressLine:
+                      type: string
+                    city:
+                      type: string
+                    zipcode:
+                      type: string
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: integer
+    put:
+      summary: update order api
+      description: |
+        update order details for processing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId: 
+                  type: integer
+                products: 
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      name:
+                        type: string
+                      price:
+                        type: number
+                      categoryName:
+                        type: string
+                      quantity:
+                        type: integer
+                address:
+                  type: object
+                  properties:
+                    addressLine:
+                      type: string
+                    city:
+                      type: string
+                    zipcode:
+                      type: string
+      responses:
+        '200':
+          description: Order updated successfully
+      
