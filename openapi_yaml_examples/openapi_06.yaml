@@ -31,8 +31,6 @@ servers:
         default: "8080"
       version: 
         default: v1
-      
-  
 paths: 
   /categories:
     get:
@@ -144,5 +142,49 @@ paths:
                       type: string
                     quantity:
                       type: integer
-        
+  /orders:
+    post:
+      summary: order api
+      description: |
+        Post order details for processing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products: 
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      name:
+                        type: string
+                      price:
+                        type: number
+                      categoryName:
+                        type: string
+                      quantity:
+                        type: integer
+                address:
+                  type: object
+                  properties:
+                    addressLine:
+                      type: string
+                    city:
+                      type: string
+                    zipcode:
+                      type: string
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: integer
       
