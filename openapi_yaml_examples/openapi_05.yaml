@@ -114,6 +114,8 @@ paths:
                       type: string
                     quantity:
                       type: integer
+                    vendor:
+                      type: string
   /products/{productsId}:
     get:
       summary: Returns the products details
@@ -144,5 +146,7 @@ paths:
                       type: string
                     quantity:
                       type: integer
+                    vendor:
+                      type: string
         
       
