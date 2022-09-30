@@ -1,0 +1,498 @@
+openapi: 3.0.3
+info: 
+  title: Shop Online APIs Definition
+  description: |
+   ## About Us
+    Using this `OpenAPI specification`, any consumer can understand the _APIs_ that are exposed by the ***Shop-Online*** team.
+    # Product Categories
+      - Mobiles
+        - Apple
+        - Samsung
+        - OnePlus
+      - Laptops
+      - Watches
+      - Accessories 
+        - TV
+        - Home Appliances
+  termsOfService: http://hem-kant.blogspot.com/
+  x-custom-info:
+    comment: some comments
+    authors:
+      - name: XYZ
+        email: xya@abc.com
+  contact: 
+    name: API Support
+    url: http://hem-kant.blogspot.com/
+    email: hemkant.india@gmail.com
+  license: 
+    name: OnlineShop License
+    url: http://hem-kant.blogspot.com/
+  version: 0.0.1
+externalDocs:
+  url: https://github.com/hem-kant/openapi/
+  description: External Documentation
+servers: 
+  - url: https://dev.api.com/v1/
+    description: Devlopment API
+  - url: https://qa.api.com/v1/
+    description: QA API
+  - url: https://api.com/v1/
+    description: PROD API
+  - url: https://{username}.api.com:{port}/{version}
+    variables:
+      username:
+        default: demo
+        description: this value is a default.
+      port:
+        enum:
+          - "8080"
+          - "443"
+        default: "8080"
+      version: 
+        default: v1
+tags:
+  - name: Categories
+    description: Categories realted opreations
+  - name: Products
+    description: Products realted opreations
+  - name: Orders
+    description: Orders realted opreations
+security:
+  - BasicAuth: []
+  - BearerAuth: []
+  - APIKeyAuth: []
+  - oAuth2AuthCode: 
+    - read
+    - write
+    - admin
+paths: 
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Returns the list of all products categories
+      description: |
+         Returns the list of all products and categories 
+         which is available on shopOnline portal
+      operationId: getCategories
+      security:
+        - BasicAuth: []
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            maximum: 1000
+          examples: 
+            mobiles: 
+              summary: Use this example for mobiles
+              value: 100
+            laptops:
+              summary: Use this example for laptops
+              value: 200
+            headphones:
+              summary: Use this example for headphones
+              value: 300
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/category" 
+              examples:
+                all-categories-data:
+                  summary: Categories example data
+                  value:
+                    - categoryId: 100
+                      name: mobiles
+                    - categoryId: 200
+                      name: laptops
+                    - categoryId: 300
+                      name: headphones
+                single-category-data:
+                  summary: Single Categories example data
+                  value:
+                    - categoryId: 100
+                      name: mobiles
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+                    
+  /categories/{categoryId}:
+    get:
+      tags:
+        - Categories
+      summary: Returns the list of all products categories
+      description: Returns the list of all products and categories which is available on shopOnline portal
+      operationId: getCategoryDetails
+      security: []
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            maximum: 1000
+          example: 100
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/category" 
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Returns the list of all products
+      description: Returns the list of all products which is available on shopOnline portal
+      operationId: getProducts
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            maximum: 1000
+          example: 100
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/products"
+              examples:
+                products-data:
+                  summary: Products example data
+                  value:
+                    - productId: 101
+                      name: Apple iPhone 13
+                      price: 1000000000
+                      categoryName: Mobiles
+                      quantity: 1
+                    - ProductId: 102
+                      name: Apple iPhone 14
+                      price: 1000000000
+                      categoryName: Mobiles
+                      quantity: 1
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /products/{productsId}:
+    get:
+      tags:
+        - Products
+      summary: Returns the products details
+      description: Returns the products details based on ID which is available on shopOnline portal
+      operationId: getProductDetails
+      parameters:
+        - name: productsId
+          in: path
+          required: true
+          schema:
+            type: integer
+            maximum: 1000
+          example: 100
+      responses: 
+        '200':
+          description: A List of catergories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/products"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /orders:
+    post:
+      tags:
+        - Orders
+      summary: order api
+      description: |
+        Post order details for processing
+      operationId: saveOrderDetails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products: 
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/products" 
+                address:
+                  $ref: "#/components/schemas/Address"
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: integer
+          links:
+            GetOrderByOrderId:
+              $ref: "#/components/links/GetOrderByOrderId"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - Orders
+      summary: update order api
+      description: |
+        update order details for processing
+      operationId: updateOrderdetails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId: 
+                  type: integer
+                products: 
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/products"
+                address:
+                  $ref: "#/components/schemas/Address"
+      responses:
+        '200':
+          description: Order updated successfully
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - Orders
+      summary: delete order api
+      description: delete order details
+      operationId: deleteOrderDetails
+      parameters:
+        - $ref: "#/components/parameters/orderIdQueryParam"
+      responses:
+        '204':
+          description: Order is deleted successfully
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      tags:
+        - Orders
+      summary: get order details
+      description: get order details
+      operationId: getOrderDetails
+      parameters:
+        - $ref: "#/components/parameters/orderIdQueryParam"
+      responses:
+        '200':
+          description: Order is fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId: 
+                    type: integer
+                  products: 
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/products"
+                  address:
+                     $ref: "#/components/schemas/Address"
+          
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /oneOfOrders:
+    post:
+      tags:
+        - Orders
+      summary: Insert oneof the order details
+      description: Insert oneof the order details in shopping cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: object
+                  oneOf:
+                    - $ref: "#/components/schemas/mobiles"
+                    - $ref: "#/components/schemas/laptops"
+                address: 
+                    $ref: "#/components/schemas/Address"
+              required:
+                - products
+                - address
+      responses:
+        '200':
+          description: order placed
+  /anyOfOrders:
+    get:
+      tags:
+        - Orders
+      summary: Get order
+      description: Get order details based on ID
+      parameters:
+        - $ref: "#/components/parameters/orderIdQueryParam"
+        - name: fetchType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - summary
+              - details
+          description: >
+            Fetch Type:
+              * `summary` - will provide the order summary
+              * `details` - will provide the sumamr & details of order address
+      responses:
+        '200':
+          description:  return product details
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: "#/components/schemas/OrderSummary"
+                  - $ref: "#/components/schemas/OrderDetails"
+            
+        
+          
+components:
+  parameters:
+    orderIdQueryParam:
+      name: orderId
+      in: query
+      required: true
+      schema:
+        type: integer
+  schemas:
+    Address: 
+      type: object
+      properties:
+        addressLine:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+          enum:
+            - ND
+            - MUM
+            - HYD
+        zipcode:
+          type: string
+        isOfficeAddress: 
+          type: boolean
+    products:
+      type: object
+      properties:
+        productId:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        categoryName:
+          type: string
+          nullable: true
+        releseDate:
+          type: string
+          format: date
+          readOnly: true
+        quantity:
+          type: integer
+          description: |
+              ***Quantity*** represents `stock` value when this field is being sent by OnlineShope.Where as in the scenarios of consumer sending this feild, it represents `number of product items` inside the order. Consumers are expected to handle the scenario of stopping the end user <u>*when the stock value is 0*</u> 
+    category:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+        name:
+          type: string
+    mobiles:
+      allOf:
+        - $ref: "#/components/schemas/products"
+        - type: object
+          properties:
+            networkType:
+              type: string
+              enum:
+                - 4G
+                - 5G
+          required: [networkType]
+    laptops:
+      allOf:
+        - $ref: "#/components/schemas/products"
+        - type: object
+          properties:
+            ram:
+              type: string
+              enum:
+                - 8GB RAM
+                - 16GB RAM
+                - 32GB RAM
+          required: [ram]
+    OrderSummary:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/products"
+    OrderDetails:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/Address"
+  responses:
+    InternalServerError:
+      description: |
+        ### An error has occured please contant hemkant.india@gmail.com for assistance
+  links:
+    GetOrderByOrderId:
+      description: >
+        * The `orderId` value returned in the response can be used as a input paramter in `GET /orders`.
+      operationId: getProductdetails
+      parameters:
+        orderId: '$response.body#/orderId'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    APIKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+    oAuth2AuthCode:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://server/oauth/authorize
+          tokenUrl: https://server/api/authorize/token
+          scopes:
+            read: read accesss
+            write: write accesss
+            admin: admin accesss
+          
+          
+      
+      
+      
+      
+      
+      
